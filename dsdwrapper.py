@@ -30,8 +30,8 @@ def collect_files_to_zip(destinationFile, filesToZip):
     """
     with zipfile.ZipFile('%s.zip' %(destinationFile), 'w') as myzip:
         for f in filesToZip:
-            myzip.write(f)
-            logger.debug('Archiving %s' %(f,))
+            myzip.write(f, "%s.wav" %(f,))
+            logger.debug('Archiving %s into %s' %(f, myzip.filename))
 
 def main():
     """
@@ -54,7 +54,7 @@ def main():
     # parse input file metadata
 
     # pack to zip archive
-    collect_files_to_zip(outfilename.name, [args.filename])
+    collect_files_to_zip(args.filename, [outfilename.name])
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
