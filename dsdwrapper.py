@@ -6,6 +6,7 @@ import wave
 import logging
 import tempfile
 
+logger = logging.getLogger('dsdwrapper')
 
 def parse_arguments():
     """
@@ -30,7 +31,7 @@ def collect_files_to_zip(destinationFile, filesToZip):
     with zipfile.ZipFile('%s.zip' %(destinationFile), 'w') as myzip:
         for f in filesToZip:
             myzip.write(f)
-            logging.debug('Archiving %s' %(f,))
+            logger.debug('Archiving %s' %(f,))
 
 def main():
     """
@@ -46,13 +47,19 @@ def main():
     commandLine = "cat {filename} | padsp dsd -i - -w {outputfile}".format(filename=args.filename, outputfile=outfilename.name)
 
     logging.debug(commandLine)
-    os.system(commandLine)
+    if os.system(commandLine):
+        logger.error('command line failed to execute')
+        sys.exit(1)
+
+    # parse input file metadata
 
     # pack to zip archive
     collect_files_to_zip(outfilename.name, [args.filename])
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    logger.debug("test")
     main()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
